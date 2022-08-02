@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-
 export const deleteModalSlice = createSlice({
   name: 'deleteModal',
   initialState: {value: false},

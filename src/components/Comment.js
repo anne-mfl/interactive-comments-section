@@ -8,7 +8,6 @@ import editIcon from '../images/icon-edit.svg'
 import deleteIcon from '../images/icon-delete.svg'
 import Counter from './Counter';
 import DeleteModal from './DeleteModal';
-import Reply from './Reply';
 
 export default function System({ data, type, parentId }) {
 
@@ -17,7 +16,6 @@ export default function System({ data, type, parentId }) {
   const [editMode, setEditMode] = useState({ num: null })
   const [replyMode, setReplyMode] = useState({ num: null })
   const [comment, setComment] = useState('')
-  // console.log('comment==>', comment.split(' ').slice(1))
 
   const commentList = useSelector((state) => state.comment)
   const currentUserList = useSelector((state) => state.currentUser)
@@ -45,6 +43,7 @@ export default function System({ data, type, parentId }) {
     }
   }
 
+
   useEffect(() => {
     deleteModal
       ? document.body.classList.add("overflow--hidden")
@@ -62,9 +61,9 @@ export default function System({ data, type, parentId }) {
             <Counter type={type} data={data} />
           </div>
 
-          <div>
+          <div className='w-full'>
 
-            <div className='hidden lg:flex lg:justify-between'>
+            <div className='lg:flex lg:justify-between'>
               <div className='flex items-center'>
                 <img src={require('../images/avatars/image-' + data.user.username + '.png')} alt='avatar' className='h-10' />
                 <h1 className='font-semibold mx-4 text-darkBlue'>{data.user.username}</h1>
@@ -74,38 +73,36 @@ export default function System({ data, type, parentId }) {
                 <h2 className='text-grayishBlue text-sm'>{data.createdAt.length >= 16 ? moment(data.createdAt).fromNow() : data.createdAt}</h2>
               </div>
               {currentUser === data.user.username ?
-              <div className='flex'>
-                <button
-                  className='flex items-center mr-4'
-                  onClick={() => dispatch(setDeleteModal(true))}
-                >
-                  <img src={deleteIcon} alt='reply icon' className='' />
-                  <h3 className='text-softRed font-medium ml-1'>Delete</h3>
-                </button>
+                <div className='hidden lg:flex '>
+                  <button
+                    className='flex items-center mr-4'
+                    onClick={() => dispatch(setDeleteModal(true))}
+                  >
+                    <img src={deleteIcon} alt='reply icon' className='' />
+                    <h3 className='text-softRed font-medium ml-1'>Delete</h3>
+                  </button>
 
-                {/* --------- delete modal --------- */}
-                {deleteModal && <DeleteModal data={data} type={type} />}
-                {/* -------------------------------- */}
+                  {deleteModal && <DeleteModal data={data} type={type} />}
 
+                  <button
+                    className='flex items-center'
+                    onClick={() => setEditMode({ num: data.id })}
+                    disabled={editMode.num}
+                  >
+                    <img src={editIcon} alt='reply icon' className={editMode.num && 'opacity-30'} />
+                    <h3 className={`text-moderateBlue font-medium ml-1 ${editMode.num && 'opacity-30'}`}>Edit</h3>
+                  </button>
+                </div>
+                :
                 <button
-                  className='flex items-center'
-                  onClick={() => setEditMode({ num: data.id })}
-                  disabled={editMode.num}
+                  className='hidden lg:flex lg:items-center'
+                  onClick={() => setReplyMode({ num: data.id })}
+                  disabled={replyMode.num === data.id}
                 >
-                  <img src={editIcon} alt='reply icon' className={editMode.num && 'opacity-30'} />
-                  <h3 className={`text-moderateBlue font-medium ml-1 ${editMode.num && 'opacity-30'}`}>Edit</h3>
+                  <img src={replyIcon} alt='reply icon' className='' />
+                  <h3 className='text-moderateBlue font-medium mx-2'>Reply</h3>
                 </button>
-              </div>
-              :
-              <button
-                className='flex items-center'
-                onClick={() => setReplyMode({ num: data.id })}
-                disabled={replyMode.num === data.id}
-              >
-                <img src={replyIcon} alt='reply icon' className='' />
-                <h3 className='text-moderateBlue font-medium mx-2'>Reply</h3>
-              </button>
-            }
+              }
             </div>
 
             {editMode && editMode.num === data.id ?
@@ -131,17 +128,18 @@ export default function System({ data, type, parentId }) {
                 </div>
               </div>
               :
-              <>
+              <div className='lg:min-w-full'>
                 {type === 'reply'
                   ? <div className='my-6 lg:mt-6 lg:mb-1'>
-                    <span className='text-moderateBlue font-medium'>@{data.replyingTo}</span> <span className='text-grayishBlue'>{data.content}</span>
+                    <span className='text-moderateBlue font-medium'>@{data.replyingTo}&nbsp;</span>
+                    <span className='text-grayishBlue'>{data.content}</span>
                   </div>
                   : <p className='text-grayishBlue my-6 lg:mt-6 lg:mb-1'>{data.content}</p>}
-              </>
+              </div>
             }
           </div>
 
-          {/* ↓↓↓footer of each comment mobile↓↓↓ */}
+          {/* ↓↓↓mobile version: footer of each comment↓↓↓ */}
           <div className='flex justify-between lg:hidden'>
             <Counter type={type} data={data} />
             {currentUser === data.user.username ?
@@ -154,9 +152,7 @@ export default function System({ data, type, parentId }) {
                   <h3 className='text-softRed font-medium ml-1'>Delete</h3>
                 </button>
 
-                {/* --------- delete modal --------- */}
                 {deleteModal && <DeleteModal data={data} type={type} />}
-                {/* -------------------------------- */}
 
                 <button
                   className='flex items-center'
@@ -178,21 +174,23 @@ export default function System({ data, type, parentId }) {
               </button>
             }
           </div>
-          {/* ↑↑↑footer of each comment mobile↑↑↑ */}
+          {/* ↑↑↑mobile version: footer of each comment↑↑↑ */}
 
         </section>
 
+
         {replyMode && replyMode.num === data.id &&
-          <section className={`mx-auto bg-white rounded-xl my-5 py-3 px-3 ${type === 'reply' && 'ml-6'}`}>
+          <section className={`mx-auto bg-white rounded-xl my-5 py-3 px-3 comment ${type === 'reply' && 'ml-16'} lg:flex`}>
+             <img src={require('../images/avatars/image-' + currentUser + '.png')} alt='avatar' className='h-9 hidden lg:block' />
             <textarea
               onChange={(e) => setComment(e.target.value)}
               defaultValue={`@${data.user.username} `}
-              className='border-2 border-lightGray rounded-xl w-full resize-none h-32 focus:outline-none py-3 px-2 text-grayishBlue scrollbar'
+              className='border-2 border-lightGray rounded-xl w-full resize-none h-32 focus:outline-none py-3 px-2 text-grayishBlue scrollbar lg:mx-5'
             />
-            <div className='flex justify-between items-center mt-3'>
-              <img src={require('../images/avatars/image-' + currentUser + '.png')} alt='avatar' className='h-9' />
+            <div className='flex justify-between items-center mt-3 lg:items-start lg:mt-0'>
+              <img src={require('../images/avatars/image-' + currentUser + '.png')} alt='avatar' className='h-9 lg:hidden' />
               <button
-                className={`bg-moderateBlue text-white rounded-xl font-medium px-7 py-3 ${checkComment(comment) && 'opacity-50'}`}
+                className={`bg-moderateBlue text-white rounded-xl font-medium px-7 py-3 ${checkComment(comment) && 'opacity-50'} lg:`}
                 disabled={checkComment(comment)}
                 onClick={() => {
                   dispatch(replyComment({
@@ -217,6 +215,7 @@ export default function System({ data, type, parentId }) {
             </div>
           </section>
         }
+
       </div>
     </>
   )

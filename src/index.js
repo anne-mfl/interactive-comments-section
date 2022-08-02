@@ -13,7 +13,7 @@ const store = configureStore({
   reducer: {
     comment: commentReducer,
     currentUser: currentUserReducer,
-    deleteModal: deleteModalReducer
+    deleteModal: deleteModalReducer,
   }
 })
 
