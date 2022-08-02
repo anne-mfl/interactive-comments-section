@@ -8,6 +8,7 @@ import editIcon from '../images/icon-edit.svg'
 import deleteIcon from '../images/icon-delete.svg'
 import Counter from './Counter';
 import DeleteModal from './DeleteModal';
+import Reply from './Reply';
 
 export default function System({ data, type, parentId }) {
 
@@ -33,12 +34,12 @@ export default function System({ data, type, parentId }) {
     }
   }
 
-  const removeFirstWord =(comment)=> {
+  const removeFirstWord = (comment) => {
     const indexOfSpace = comment.indexOf(' ')
     return comment.substring(indexOfSpace + 1)
   }
 
-  const checkComment =(comment)=> {
+  const checkComment = (comment) => {
     if (comment.trim().split(' ').length === 1) {
       return true
     }
@@ -54,50 +55,94 @@ export default function System({ data, type, parentId }) {
   return (
     <>
       <div className='comment'>
-        <section className={`${type === 'reply' && 'ml-6 lg:ml-16'} bg-white  py-5 px-3 rounded-xl mb-5`}>
-          <div className='flex items-center'>
-            <img src={require('../images/avatars/image-' + data.user.username + '.png')} alt='avatar' className='h-10' />
-            <h1 className='font-semibold mx-4 text-darkBlue'>{data.user.username}</h1>
-            {currentUser === data.user.username &&
-              <p className='bg-moderateBlue text-white rounded-sm px-2 mr-3 text-sm w-fit'>you</p>
-            }
-            <h2 className='text-grayishBlue text-sm'>{data.createdAt.length >= 16 ? moment(data.createdAt).fromNow() : data.createdAt}</h2>
+
+        <section className={`${type === 'reply' && 'ml-6 lg:ml-16'} bg-white  py-5 px-3 rounded-xl mb-5 lg:flex lg:py-6`}>
+
+          <div className='hidden lg:block'>
+            <Counter type={type} data={data} />
           </div>
 
-          {editMode && editMode.num === data.id ?
-            <div className='my-5'>
-              <textarea
-                defaultValue={type === 'reply' && data.content.split('')[0] !== '@' ? `@${data.replyingTo} ${data.content}` : data.content}
-                onChange={(e) => setComment(e.target.value)}
-                className='border-2 border-lightGray rounded-xl w-full resize-none h-32 focus:outline-none py-3 px-2 text-grayishBlue scrollbar'
-              />
-              <div className='flex justify-end'>
-                <button
-                  className={`bg-moderateBlue text-white rounded-xl font-medium px-7 py-3 mt-2 ${!comment && 'opacity-50'}`}
-                  disabled={!comment}
-                  onClick={() => {
-                    dispatch(editComment({
-                      id: data.id,
-                      content: comment,
-                      type
-                    }))
-                    setComment('')
-                    setEditMode(false)
-                  }}>UPDATE</button>
+          <div>
+
+            <div className='hidden lg:flex lg:justify-between'>
+              <div className='flex items-center'>
+                <img src={require('../images/avatars/image-' + data.user.username + '.png')} alt='avatar' className='h-10' />
+                <h1 className='font-semibold mx-4 text-darkBlue'>{data.user.username}</h1>
+                {currentUser === data.user.username &&
+                  <p className='bg-moderateBlue text-white rounded-sm px-2 mr-3 text-sm w-fit'>you</p>
+                }
+                <h2 className='text-grayishBlue text-sm'>{data.createdAt.length >= 16 ? moment(data.createdAt).fromNow() : data.createdAt}</h2>
               </div>
+              {currentUser === data.user.username ?
+              <div className='flex'>
+                <button
+                  className='flex items-center mr-4'
+                  onClick={() => dispatch(setDeleteModal(true))}
+                >
+                  <img src={deleteIcon} alt='reply icon' className='' />
+                  <h3 className='text-softRed font-medium ml-1'>Delete</h3>
+                </button>
+
+                {/* --------- delete modal --------- */}
+                {deleteModal && <DeleteModal data={data} type={type} />}
+                {/* -------------------------------- */}
+
+                <button
+                  className='flex items-center'
+                  onClick={() => setEditMode({ num: data.id })}
+                  disabled={editMode.num}
+                >
+                  <img src={editIcon} alt='reply icon' className={editMode.num && 'opacity-30'} />
+                  <h3 className={`text-moderateBlue font-medium ml-1 ${editMode.num && 'opacity-30'}`}>Edit</h3>
+                </button>
+              </div>
+              :
+              <button
+                className='flex items-center'
+                onClick={() => setReplyMode({ num: data.id })}
+                disabled={replyMode.num === data.id}
+              >
+                <img src={replyIcon} alt='reply icon' className='' />
+                <h3 className='text-moderateBlue font-medium mx-2'>Reply</h3>
+              </button>
+            }
             </div>
-            :
-            <>
-              {type === 'reply' 
-                ? <div className='my-6'>
-                  <span className='text-moderateBlue font-medium'>@{data.replyingTo}</span> <span className='text-grayishBlue'>{data.content}</span>
+
+            {editMode && editMode.num === data.id ?
+              <div className='my-5'>
+                <textarea
+                  defaultValue={type === 'reply' && data.content.split('')[0] !== '@' ? `@${data.replyingTo} ${data.content}` : data.content}
+                  onChange={(e) => setComment(e.target.value)}
+                  className='border-2 border-lightGray rounded-xl w-full resize-none h-32 focus:outline-none py-3 px-2 text-grayishBlue scrollbar'
+                />
+                <div className='flex justify-end'>
+                  <button
+                    className={`bg-moderateBlue text-white rounded-xl font-medium px-7 py-3 mt-2 ${!comment && 'opacity-50'}`}
+                    disabled={!comment}
+                    onClick={() => {
+                      dispatch(editComment({
+                        id: data.id,
+                        content: comment,
+                        type
+                      }))
+                      setComment('')
+                      setEditMode(false)
+                    }}>UPDATE</button>
                 </div>
-                : <p className='text-grayishBlue my-6'>{data.content}</p>}
-            </>
-          }
+              </div>
+              :
+              <>
+                {type === 'reply'
+                  ? <div className='my-6 lg:mt-6 lg:mb-1'>
+                    <span className='text-moderateBlue font-medium'>@{data.replyingTo}</span> <span className='text-grayishBlue'>{data.content}</span>
+                  </div>
+                  : <p className='text-grayishBlue my-6 lg:mt-6 lg:mb-1'>{data.content}</p>}
+              </>
+            }
+          </div>
 
-
-          <div className='flex justify-between'>
+          {/* ↓↓↓footer of each comment mobile↓↓↓ */}
+          <div className='flex justify-between lg:hidden'>
             <Counter type={type} data={data} />
             {currentUser === data.user.username ?
               <div className='flex'>
@@ -111,6 +156,7 @@ export default function System({ data, type, parentId }) {
 
                 {/* --------- delete modal --------- */}
                 {deleteModal && <DeleteModal data={data} type={type} />}
+                {/* -------------------------------- */}
 
                 <button
                   className='flex items-center'
@@ -132,6 +178,8 @@ export default function System({ data, type, parentId }) {
               </button>
             }
           </div>
+          {/* ↑↑↑footer of each comment mobile↑↑↑ */}
+
         </section>
 
         {replyMode && replyMode.num === data.id &&
@@ -154,7 +202,6 @@ export default function System({ data, type, parentId }) {
                     score: 0,
                     parentId: type === 'comment' ? data.id : type === 'reply' && parentId,
                     replyingTo: data.user.username,
-                    // replyingTo: type === 'comment' ? data.user.username : type === 'reply' && data.replyingTo,
                     user: {
                       image: {
                         png: '',

@@ -15,9 +15,9 @@ export default function Counter({ data, type }) {
   
 
   return (
-    <div className='bg-veryLightGray max-w-fit flex py-3 rounded-xl'>
+    <div className='bg-veryLightGray max-w-fit flex py-3 rounded-xl lg:flex-col lg:items-center lg:px-4 lg:ml-2 lg:mr-6'>
       <button
-        className='px-4'
+        className='px-4 lg:pb-4 lg:px-0'
         onClick={() => {
           if (voted[data.id] === false) {
             dispatch(incrementScore({
@@ -32,9 +32,9 @@ export default function Counter({ data, type }) {
       >
         <img src={plusIcon} alt='plus button' className='' />
       </button>
-      <p className={`text-moderateBlue font-semibold ${voted[data.id] === true && 'scored'}`}>{data.score}</p>
+      <p className={`text-moderateBlue font-semibold ${voted[data.id] === true && 'scored'} lg:w-fit lg:mx-auto`}>{data.score}</p>
       <button
-        className='px-4'
+        className='px-4 lg:pt-4 lg:px-0'
         onClick={() => {
           if (voted[data.id] === false) {
             dispatch(decrementScore({

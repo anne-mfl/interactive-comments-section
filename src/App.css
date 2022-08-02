@@ -35,7 +35,7 @@ body.overflow--hidden {
   }
   50%{
     font-weight: 900;
-    transform: scale(1.4);
+    transform: scale(1.2);
   }
   100% {
     font-weight: 600;
