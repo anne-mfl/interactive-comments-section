@@ -2,6 +2,43 @@
   scrollbar-width: none;
 }
 
-.scrollbar::-webkit-scrollbar  {
+.scrollbar::-webkit-scrollbar {
   width: 0;
+}
+
+body.overflow--hidden {
+  overflow-y: hidden;
+}
+
+.comment {
+  animation: display-comment 0.5s
+}
+
+@keyframes display-comment {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.scored {
+  animation: change-score 0.3s
+}
+
+@keyframes change-score {
+  0% {
+    font-weight: 600;
+  }
+  50%{
+    font-weight: 900;
+    transform: scale(1.4);
+  }
+  100% {
+    font-weight: 600;
+  }
+  
 }

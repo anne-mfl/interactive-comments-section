@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { addComment } from '../features'
+import { addComment } from '../features/comments'
 import { useSelector, useDispatch } from "react-redux";
 
 export default function AddComment() {
@@ -23,7 +23,8 @@ export default function AddComment() {
   }
 
   return (
-    <div className='w-11/12 mx-auto bg-white rounded-xl py-5 px-3'>
+    // <div className='w-11/12 mx-auto bg-white rounded-xl py-5 px-3'>
+    <div className='bg-white rounded-xl py-5 px-3'>
       <textarea
         onChange={(e) => setComment(e.target.value)}
         value={comment}
@@ -34,7 +35,8 @@ export default function AddComment() {
       <div className='flex justify-between items-center mt-3'>
         <img src={require('../images/avatars/image-' + currentUser + '.png')} alt='avatar' className='h-9' />
         <button
-          className='bg-moderateBlue text-white rounded-xl font-medium px-7 py-3'
+          className={`bg-moderateBlue text-white rounded-xl font-medium px-7 py-3 ${comment.trim() === '' && 'opacity-50'}`}
+          disabled={comment.trim() === ''}
           onClick={() => {
             dispatch(addComment({
               id: getIdnum(),
