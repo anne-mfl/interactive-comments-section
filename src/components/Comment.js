@@ -17,6 +17,8 @@ export default function System({ data, type, parentId }) {
   const [replyMode, setReplyMode] = useState({ num: null })
   const [comment, setComment] = useState('')
 
+
+
   const commentList = useSelector((state) => state.comment)
   const currentUserList = useSelector((state) => state.currentUser)
   const currentUser = currentUserList.value.username
@@ -55,7 +57,7 @@ export default function System({ data, type, parentId }) {
     <>
       <div className='comment'>
 
-        <section className={`${type === 'reply' && 'ml-6 lg:ml-16'} bg-white  py-5 px-3 rounded-xl mb-5 lg:flex lg:py-6`}>
+        <section className={`${type === 'reply' && 'ml-6 lg:ml-10'} bg-white  py-5 px-3 rounded-xl mb-5 lg:flex lg:py-6`}>
 
           <div className='hidden lg:block'>
             <Counter type={type} data={data} />
@@ -139,7 +141,7 @@ export default function System({ data, type, parentId }) {
             }
           </div>
 
-          {/* ↓↓↓mobile version: footer of each comment↓↓↓ */}
+          {/* ↓↓↓mobile version - footer of each comment↓↓↓ */}
           <div className='flex justify-between lg:hidden'>
             <Counter type={type} data={data} />
             {currentUser === data.user.username ?
@@ -174,7 +176,7 @@ export default function System({ data, type, parentId }) {
               </button>
             }
           </div>
-          {/* ↑↑↑mobile version: footer of each comment↑↑↑ */}
+          {/* ↑↑↑mobile version - footer of each comment↑↑↑ */}
 
         </section>
 

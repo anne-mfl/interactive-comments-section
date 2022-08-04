@@ -13,7 +13,7 @@ export default function New() {
         <>
           <Comment data={comment} type={'comment'} key={comment.id} />
 
-          <div className='border-l-2 border-veryLightGrey'>
+          <div className='border-l-2 border-veryLightGrey lg:ml-10'>
             {comment.replies.map((reply) => (
               <Comment data={reply} type={'reply'} parentId={comment.id} key={reply.id} />
             ))}
