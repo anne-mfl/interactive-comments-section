@@ -8,7 +8,6 @@ export default function AddComment() {
 
   const dispatch = useDispatch();
   const commentList = useSelector((state) => state.comment)
-
   const currentUserList = useSelector((state) => state.currentUser)
   const currentUser = currentUserList.value.username
 
@@ -23,7 +22,6 @@ export default function AddComment() {
   }
 
   return (
-    // <div className='w-11/12 mx-auto bg-white rounded-xl py-5 px-3'>
     <div className='bg-white rounded-xl py-5 px-3'>
       <textarea
         onChange={(e) => setComment(e.target.value)}

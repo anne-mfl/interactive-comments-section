@@ -11,14 +11,11 @@ import DeleteModal from './DeleteModal';
 
 export default function System({ data, type, parentId }) {
 
-  const dispatch = useDispatch();
-
   const [editMode, setEditMode] = useState({ num: null })
   const [replyMode, setReplyMode] = useState({ num: null })
   const [comment, setComment] = useState('')
-
-
-
+  
+  const dispatch = useDispatch();
   const commentList = useSelector((state) => state.comment)
   const currentUserList = useSelector((state) => state.currentUser)
   const currentUser = currentUserList.value.username
@@ -44,7 +41,6 @@ export default function System({ data, type, parentId }) {
       return true
     }
   }
-
 
   useEffect(() => {
     deleteModal

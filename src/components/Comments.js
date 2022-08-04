@@ -7,7 +7,6 @@ export default function New() {
   const commentList = useSelector((state) => state.comment)
 
   return (
-    // <div className='w-11/12 mx-auto lg:w-6/12'>
     <div className=''>
       {commentList.value.map((comment) => (
         <>
