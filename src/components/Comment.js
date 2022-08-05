@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import moment from 'moment';
 import { useSelector, useDispatch } from "react-redux";
 import { editComment, replyComment } from '../features/comments'
-import { setDeleteModal } from '../features/deleteModal'
 import replyIcon from '../images/icon-reply.svg'
 import editIcon from '../images/icon-edit.svg'
 import deleteIcon from '../images/icon-delete.svg'
@@ -13,13 +12,14 @@ export default function System({ data, type, parentId }) {
 
   const [editMode, setEditMode] = useState({ num: null })
   const [replyMode, setReplyMode] = useState({ num: null })
+  const [deleteMode, setDeleteMode] = useState({ num: null })
   const [comment, setComment] = useState('')
-  
+
+
   const dispatch = useDispatch();
   const commentList = useSelector((state) => state.comment)
   const currentUserList = useSelector((state) => state.currentUser)
   const currentUser = currentUserList.value.username
-  const deleteModal = useSelector((state) => state.deleteModal.value)
 
   const getIdnum = () => {
     const com = Math.max(...commentList.value.map((comment) => Math.max(comment.id)))
@@ -43,10 +43,10 @@ export default function System({ data, type, parentId }) {
   }
 
   useEffect(() => {
-    deleteModal
+    deleteMode.num
       ? document.body.classList.add("overflow--hidden")
       : document.body.classList.remove("overflow--hidden");
-  }, [commentList, deleteModal]);
+  }, [commentList, deleteMode]);
 
 
   return (
@@ -74,13 +74,13 @@ export default function System({ data, type, parentId }) {
                 <div className='hidden lg:flex '>
                   <button
                     className='flex items-center mr-4'
-                    onClick={() => dispatch(setDeleteModal(true))}
+                    onClick={() => setDeleteMode({num: data.id})}
                   >
                     <img src={deleteIcon} alt='reply icon' className='' />
                     <h3 className='text-softRed font-medium ml-1'>Delete</h3>
                   </button>
 
-                  {deleteModal && <DeleteModal data={data} type={type} />}
+                  {deleteMode.num && <DeleteModal type={type} deleteMode={deleteMode} setDeleteMode={setDeleteMode}/>}
 
                   <button
                     className='flex items-center'
@@ -144,13 +144,13 @@ export default function System({ data, type, parentId }) {
               <div className='flex'>
                 <button
                   className='flex items-center mr-4'
-                  onClick={() => dispatch(setDeleteModal(true))}
+                  onClick={() => setDeleteMode({num: data.id})}
                 >
                   <img src={deleteIcon} alt='reply icon' className='' />
                   <h3 className='text-softRed font-medium ml-1'>Delete</h3>
                 </button>
 
-                {deleteModal && <DeleteModal data={data} type={type} />}
+                {deleteMode.num && <DeleteModal type={type} deleteMode={deleteMode} setDeleteMode={setDeleteMode}/>}
 
                 <button
                   className='flex items-center'
@@ -173,13 +173,12 @@ export default function System({ data, type, parentId }) {
             }
           </div>
           {/* ↑↑↑mobile version - footer of each comment↑↑↑ */}
-
         </section>
 
 
         {replyMode && replyMode.num === data.id &&
-          <section className={`mx-auto bg-white rounded-xl my-5 py-3 px-3 comment ${type === 'reply' && 'ml-16'} lg:flex`}>
-             <img src={require('../images/avatars/image-' + currentUser + '.png')} alt='avatar' className='h-9 hidden lg:block' />
+          <section className={`mx-auto bg-white rounded-xl my-5 py-3 px-3 comment ${type === 'reply' && 'ml-6 lg:ml-10'} lg:flex`}>
+            <img src={require('../images/avatars/image-' + currentUser + '.png')} alt='avatar' className='h-9 hidden lg:block' />
             <textarea
               onChange={(e) => setComment(e.target.value)}
               defaultValue={`@${data.user.username} `}
