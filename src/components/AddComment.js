@@ -27,7 +27,7 @@ export default function AddComment() {
         onChange={(e) => setComment(e.target.value)}
         value={comment}
         placeholder='Add a comment...'
-        className='border-2 border-lightGray rounded-xl w-full resize-none h-32 focus:outline-none py-3 px-2 scrollbar'
+        className='border-2 border-lightGray rounded-xl w-full resize-none h-32 focus:outline-none py-3 px-2 text-grayishBlue scrollbar'
       />
 
       <div className='flex justify-between items-center mt-3'>
